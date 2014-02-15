@@ -3,6 +3,20 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+
+function! s:uniq(list)
+	let list = []
+	let result = {}
+	for _ in a:list
+		if !has_key(result, _)
+			call add(list, _)
+		endif
+		let result[_] = 0
+	endfor
+	return list
+endfunction
+
+
 function! s:uniq_list(...)
 	let self = {
 \		"capacity" : get(a:, 1, 0),
@@ -148,6 +162,27 @@ endfunction
 
 function! frill#remove_index(name, index)
 	call s:get(a:name).remove_index(a:index)
+endfunction
+
+
+function! s:error_msg(msg)
+	echohl ErrorMsg
+	echo "fril.vim : " . a:msg
+	echohl NONE
+endfunction
+
+
+function! frill#import_unite_file_mru(name, mru_file)
+	if !filereadable(a:mru_file)
+		call s:error_msg("import error not found '" . a:mru_file . "'")
+		return
+	endif
+	let mru_file = readfile(a:mru_file)
+	if mru_file[0] !=# "0.2.0"
+		return s:error_msg("Not supported unite-mru version")
+	endif
+	let mru = s:get(a:name)
+	let mru.list = map(mru_file[1:], 'matchstr(v:val, ''^\zs.\{-}\ze	\d\+$'')')
 endfunction
 
 
