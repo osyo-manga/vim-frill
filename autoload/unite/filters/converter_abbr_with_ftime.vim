@@ -19,7 +19,7 @@ function! s:converter.filter(candidates, context)
 	let format = "(%Y/%m/%d %H:%M:%S)"
 	for candidate in a:candidates
 		let abbr = get(candidate, "abbr", candidate.action__path)
-		let candidate.abbr = strftime(format, getftime(candidate.action__path)) . " " . abbr
+		let candidate.abbr = strftime(format, getftime(expand(candidate.action__path))) . " " . abbr
 	endfor
 	return a:candidates
 endfunction
