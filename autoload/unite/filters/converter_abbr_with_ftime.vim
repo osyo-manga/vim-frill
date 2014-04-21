@@ -15,11 +15,16 @@ let s:converter = {
 
 
 function! s:converter.filter(candidates, context)
-	let candidates = deepcopy(a:candidates)
+" 	let candidates = deepcopy(a:candidates)
+	let candidates = a:candidates
 	let format = "(%Y/%m/%d %H:%M:%S)"
 	for candidate in candidates
-		let abbr = get(candidate, "abbr", candidate.action__path)
-		let candidate.abbr = strftime(format, getftime(expand(candidate.action__path))) . " " . abbr
+		if !has_key(candidate, "__converter_abbr_with_ftime")
+			let abbr = get(candidate, "abbr", candidate.action__path)
+			let candidate.abbr = strftime(format, getftime(expand(candidate.action__path))) . " " . abbr
+			let candidate.__converter_abbr_with_ftime = 1
+		endif
+
 	endfor
 	return candidates
 endfunction
