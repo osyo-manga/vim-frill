@@ -14,14 +14,15 @@ let s:converter = {
 \}
 
 
-
 function! s:converter.filter(candidates, context)
+	let candidates = deepcopy(a:candidates)
+	echom len(candidates)
 	let format = "(%Y/%m/%d %H:%M:%S)"
-	for candidate in a:candidates
+	for candidate in candidates
 		let abbr = get(candidate, "abbr", candidate.action__path)
 		let candidate.abbr = strftime(format, getftime(expand(candidate.action__path))) . " " . abbr
 	endfor
-	return a:candidates
+	return candidates
 endfunction
 
 
